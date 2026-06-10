@@ -4,6 +4,7 @@ import LoginForm from "./components/LoginForm";
 
 import blogService from "./services/blogs";
 import loginService from "./services/login";
+import Logout from "./components/Logout";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -15,16 +16,29 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   }, []);
 
+  useEffect(() => {
+    const logged = globalThis.localStorage.getItem("logged");
+    if (logged) {
+      setUser(JSON.parse(logged));
+    }
+  }, []);
+
   const handleLogin = (event) => {
     event.preventDefault();
     loginService
       .login(username, password)
       .then((user) => {
+        globalThis.localStorage.setItem("logged", JSON.stringify(user));
         setUser(user);
         setUsername("");
         setPassword("");
       })
       .catch((error) => console.error(error));
+  };
+
+  const handleClick = () => {
+    globalThis.localStorage.removeItem("logged");
+    setUser(null);
   };
 
   return (
@@ -38,7 +52,10 @@ const App = () => {
           handle={handleLogin}
         />
       ) : (
-        <Blogs blogs={blogs} />
+        <>
+          <Blogs blogs={blogs} />
+          <Logout handleClick={handleClick} />
+        </>
       )}
     </div>
   );
