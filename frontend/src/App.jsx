@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Blogs from "./components/Blogs";
+import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 
 import blogService from "./services/blogs";
@@ -19,7 +20,9 @@ const App = () => {
   useEffect(() => {
     const logged = globalThis.localStorage.getItem("logged");
     if (logged) {
-      setUser(JSON.parse(logged));
+      const user = JSON.parse(logged);
+      setUser(user);
+      blogService.setToken(user.token);
     }
   }, []);
 
@@ -29,6 +32,7 @@ const App = () => {
       .login(username, password)
       .then((user) => {
         globalThis.localStorage.setItem("logged", JSON.stringify(user));
+        blogService.setToken(user.token);
         setUser(user);
         setUsername("");
         setPassword("");
@@ -39,6 +43,13 @@ const App = () => {
   const handleClick = () => {
     globalThis.localStorage.removeItem("logged");
     setUser(null);
+  };
+
+  const newBlog = (blogData) => {
+    console.log(blogData); // { title, author, url }
+    blogService.create(blogData).then((newBlog) => {
+      setBlogs(blogs.concat(newBlog));
+    });
   };
 
   return (
@@ -53,8 +64,11 @@ const App = () => {
         />
       ) : (
         <>
+          <h1>Blogs</h1>
+          <Logout handleClick={handleClick} user={user} />
+          <br />
+          <BlogForm onSubmit={newBlog} />
           <Blogs blogs={blogs} />
-          <Logout handleClick={handleClick} />
         </>
       )}
     </div>
