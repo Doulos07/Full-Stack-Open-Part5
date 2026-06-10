@@ -6,12 +6,14 @@ import LoginForm from "./components/LoginForm";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Logout from "./components/Logout";
+import Notification from "./components/Notification";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -37,7 +39,15 @@ const App = () => {
         setUsername("");
         setPassword("");
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        setNotification({
+          message: error.response.data.error,
+          type: "error",
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 5000);
+      });
   };
 
   const handleClick = () => {
@@ -46,25 +56,59 @@ const App = () => {
   };
 
   const newBlog = (blogData) => {
-    console.log(blogData); // { title, author, url }
-    blogService.create(blogData).then((newBlog) => {
-      setBlogs(blogs.concat(newBlog));
-    });
+    blogService
+      .create(blogData)
+      .then((newBlog) => {
+        setBlogs(blogs.concat(newBlog));
+        setNotification({
+          message: `a new blog ${newBlog.title} by ${newBlog.author}`,
+          type: "success",
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 5000);
+      })
+      .catch((error) => {
+        setNotification({
+          message: error.response.data.error,
+          type: "error",
+        });
+        setTimeout(() => {
+          setNotification(null);
+        }, 5000);
+      });
   };
 
   return (
     <div>
       {user === null ? (
-        <LoginForm
-          username={username}
-          password={password}
-          setUsername={setUsername}
-          setPassword={setPassword}
-          handle={handleLogin}
-        />
+        <>
+          <h1>Log in to application</h1>
+          {notification && (
+            <Notification
+              message={notification.message}
+              type={notification.type}
+            />
+          )}
+          <LoginForm
+            username={username}
+            password={password}
+            setUsername={setUsername}
+            setPassword={setPassword}
+            handle={handleLogin}
+          />
+        </>
       ) : (
         <>
           <h1>Blogs</h1>
+
+          {notification && (
+            <Notification
+              message={notification.message}
+              type={notification.type}
+            />
+          )}
+
           <Logout handleClick={handleClick} user={user} />
           <br />
           <BlogForm onSubmit={newBlog} />

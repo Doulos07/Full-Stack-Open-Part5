@@ -52,7 +52,6 @@ describe("favoriteBlog", () => {
 
   test("returns blog with most likes", () => {
     const result = listHelper.favoriteBlog(blogs);
-    console.log("result", result);
 
     assert.deepStrictEqual(favorite, result);
   });
