@@ -18,8 +18,13 @@ const App = () => {
 
   const refBlogForm = useRef();
 
+  const sortLikes = (a, b) => b.likes - a.likes;
+
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => {
+      const sortedBlogs = blogs.sort(sortLikes);
+      setBlogs(sortedBlogs);
+    });
   }, []);
 
   useEffect(() => {
@@ -53,9 +58,24 @@ const App = () => {
       });
   };
 
-  const handleClick = () => {
+  const handleLogged = () => {
     globalThis.localStorage.removeItem("logged");
     setUser(null);
+  };
+
+  const handleLike = (blog) => {
+    const updateBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id };
+    blogService.update(updateBlog).then((updateBlog) => {
+      setBlogs(
+        blogs
+          .map((blog) =>
+            blog.id === updateBlog.id
+              ? (blog = { ...blog, likes: updateBlog.likes })
+              : blog,
+          )
+          .sort(sortLikes),
+      );
+    });
   };
 
   const newBlog = (blogData) => {
@@ -113,12 +133,12 @@ const App = () => {
             />
           )}
 
-          <Logout handleClick={handleClick} user={user} />
+          <Logout handleClick={handleLogged} user={user} />
           <br />
           <Togglable buttonLabel="create new blog" ref={refBlogForm}>
             <BlogForm newBlog={newBlog} />
           </Togglable>
-          <Blogs blogs={blogs} />
+          <Blogs blogs={blogs} handleLike={handleLike} />
         </>
       )}
     </div>
