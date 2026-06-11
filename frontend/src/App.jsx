@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blogs from "./components/Blogs";
 import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
@@ -7,6 +7,7 @@ import blogService from "./services/blogs";
 import loginService from "./services/login";
 import Logout from "./components/Logout";
 import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -14,6 +15,8 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState(null);
+
+  const refBlogForm = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -56,6 +59,9 @@ const App = () => {
   };
 
   const newBlog = (blogData) => {
+    console.log("1 - antes de toggle");
+    refBlogForm.current.toggleVisibile();
+    console.log("2 - despues de toggle");
     blogService
       .create(blogData)
       .then((newBlog) => {
@@ -111,7 +117,9 @@ const App = () => {
 
           <Logout handleClick={handleClick} user={user} />
           <br />
-          <BlogForm onSubmit={newBlog} />
+          <Togglable buttonLabel="create new blog" ref={refBlogForm}>
+            <BlogForm newBlog={newBlog} />
+          </Togglable>
           <Blogs blogs={blogs} />
         </>
       )}

@@ -1,13 +1,13 @@
 import { useState } from "react";
 
-const BlogForm = ({ onSubmit }) => {
+const BlogForm = ({ newBlog }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onSubmit({ title, author, url });
+    newBlog({ title, author, url });
     setTitle("");
     setAuthor("");
     setUrl("");
@@ -40,7 +40,7 @@ const BlogForm = ({ onSubmit }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button onClick={onSubmit}>Create</button>
+        <button type="submit">Create</button>
       </form>
     </div>
   );
