@@ -59,9 +59,7 @@ const App = () => {
   };
 
   const newBlog = (blogData) => {
-    console.log("1 - antes de toggle");
     refBlogForm.current.toggleVisibile();
-    console.log("2 - despues de toggle");
     blogService
       .create(blogData)
       .then((newBlog) => {
