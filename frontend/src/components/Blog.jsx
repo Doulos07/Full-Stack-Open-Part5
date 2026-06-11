@@ -1,13 +1,13 @@
 import "../styles/blog.css";
 import { useState } from "react";
 
-const Blog = ({ blog, handleLike, handleDelete }) => {
+const Blog = ({ blog, username, handleLike, handleDelete }) => {
   const [visibile, setVisibile] = useState(false);
 
   const visibileDetail = { display: visibile ? "" : "none" };
   return (
     <div className="blog">
-      {blog.title}
+      {blog.title} {blog.author}
       <button onClick={() => setVisibile(!visibile)}>
         {visibile ? "hide" : "view"}
       </button>
@@ -19,8 +19,10 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
           likes: {blog.likes}{" "}
           <button onClick={() => handleLike(blog)}>like</button>
         </p>
-        <p>author: {blog.author}</p>
-        <button onClick={() => handleDelete(blog)}>remove</button>
+        <p>author: {blog.user.username}</p>
+        {username === blog.user.username && (
+          <button onClick={() => handleDelete(blog)}>remove</button>
+        )}
       </div>
     </div>
   );
