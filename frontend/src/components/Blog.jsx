@@ -1,7 +1,7 @@
 import "../styles/blog.css";
 import { useState } from "react";
 
-const Blog = ({ blog, handleLike }) => {
+const Blog = ({ blog, handleLike, handleDelete }) => {
   const [visibile, setVisibile] = useState(false);
 
   const visibileDetail = { display: visibile ? "" : "none" };
@@ -20,6 +20,7 @@ const Blog = ({ blog, handleLike }) => {
           <button onClick={() => handleLike(blog)}>like</button>
         </p>
         <p>author: {blog.author}</p>
+        <button onClick={() => handleDelete(blog)}>remove</button>
       </div>
     </div>
   );

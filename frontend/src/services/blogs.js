@@ -4,16 +4,16 @@ let token = null;
 
 const setToken = (newToken) => (token = `Bearer ${newToken}`);
 
-const config = {
-  headers: { Authorization: token },
-};
-
 const getAll = () => {
   const request = axios.get(baseUrl);
-  return request.then((response) => response.data);
+  return request.then((res) => res.data);
 };
 
 const create = (newBlog) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
   const response = axios.post(baseUrl, newBlog, config);
   return response.then((res) => res.data);
 };
@@ -23,4 +23,13 @@ const update = (blog) => {
   return response.then((res) => res.data);
 };
 
-export default { setToken, getAll, create, update };
+const remove = (blogId) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const response = axios.delete(`${baseUrl}/${blogId}`, config);
+  return response.then((res) => res.data);
+};
+
+export default { setToken, getAll, create, update, remove };

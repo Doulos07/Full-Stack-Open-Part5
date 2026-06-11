@@ -78,6 +78,19 @@ const App = () => {
     });
   };
 
+  const deleteBlog = (deleteBlog) => {
+    //console.log("hola", blogData);
+
+    const confirmDelete = globalThis.confirm(
+      `remove blog ${deleteBlog.title} by ${deleteBlog.author}`,
+    );
+    if (confirmDelete) {
+      blogService.remove(deleteBlog.id).then(() => {
+        setBlogs(blogs.filter((blog) => blog.id !== deleteBlog.id));
+      });
+    }
+  };
+
   const newBlog = (blogData) => {
     refBlogForm.current.toggleVisibile();
     blogService
@@ -138,7 +151,11 @@ const App = () => {
           <Togglable buttonLabel="create new blog" ref={refBlogForm}>
             <BlogForm newBlog={newBlog} />
           </Togglable>
-          <Blogs blogs={blogs} handleLike={handleLike} />
+          <Blogs
+            blogs={blogs}
+            handleLike={handleLike}
+            handleDelete={deleteBlog}
+          />
         </>
       )}
     </div>
