@@ -47,3 +47,27 @@ test("shows url and likes after clicking view button", async () => {
   const detail = container.querySelector(".blogDetail");
   expect(detail).not.toHaveStyle("display: none");
 });
+
+// 5.15
+test("double click likes", async () => {
+  const user = userEvent.setup();
+  const like = vi.fn();
+
+  render(
+    <Blog
+      blog={blog}
+      username="otheruser"
+      handleLike={like}
+      handleDelete={() => {}}
+    />,
+  );
+
+  await user.click(screen.getByText("view"));
+
+  const likeButton = screen.getByText("like");
+
+  await user.dblClick(likeButton);
+
+  console.log("likes:", like.mock.calls.length);
+  expect(like).toHaveBeenCalledTimes(2);
+});
