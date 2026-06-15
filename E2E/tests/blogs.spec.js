@@ -1,5 +1,6 @@
 const { test, expect, beforeEach, describe } = require("@playwright/test");
 const Helper = require("./helper");
+const { title } = require("node:process");
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
@@ -34,6 +35,22 @@ describe("Blog app", () => {
       await expect(errorDiv).toContainText("invalid username or password");
       await expect(errorDiv).toHaveCSS("border-style", "solid");
       await expect(errorDiv).toHaveCSS("color", "rgb(255, 0, 0)");
+    });
+  });
+
+  describe("When logged in", () => {
+    beforeEach(async ({ page }) => {
+      await Helper.loginWith(page, "starklord", "santiago123");
+    });
+
+    test("a new blog can be created", async ({ page }) => {
+      const content = {
+        title: "La Ultima Lagrima",
+        author: "Memphis la Blusera",
+        url: "https://open.spotify.com/track/0cHVi2rirbT62DlX3uabke?si=6a084c99fceb40b4",
+      };
+
+      await Helper.createBlog(page, content);
     });
   });
 });
