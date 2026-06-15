@@ -4,8 +4,8 @@ const { title } = require("node:process");
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
-    await request.post("/api/reset");
-    await request.post("api/users", {
+    await request.post("/api/testing/reset");
+    await request.post("/api/users", {
       data: {
         username: "starklord",
         name: "Santiago Alvarez",
@@ -39,21 +39,33 @@ describe("Blog app", () => {
   });
 
   describe("When logged in", () => {
+    const content = {
+      title: "La Ultima Lagrima",
+      author: "Memphis la Blusera",
+      url: "https://open.spotify.com/track/0cHVi2rirbT62DlX3uabke?si=6a084c99fceb40b4",
+    };
+
     beforeEach(async ({ page }) => {
       await Helper.loginWith(page, "starklord", "santiago123");
+      await Helper.createBlog(page, content);
     });
 
     test("a new blog can be created", async ({ page }) => {
-      const content = {
-        title: "La Ultima Lagrima",
-        author: "Memphis la Blusera",
-        url: "https://open.spotify.com/track/0cHVi2rirbT62DlX3uabke?si=6a084c99fceb40b4",
-      };
-
-      await Helper.createBlog(page, content);
       await expect(
         page.getByText(`${content.title} ${content.author}`),
       ).toBeVisible();
+    });
+
+    test("a blog can be liked", async ({ page }) => {
+      // Abrir el detalle del blog
+      await page.getByRole("button", { name: "view" }).click();
+
+      // Verificar que arranca en 0 y dar like
+      await expect(page.getByText("likes: 0")).toBeVisible();
+      await page.getByRole("button", { name: "like" }).click();
+
+      // Verificar que aumentó a 1
+      await expect(page.getByText("likes: 1")).toBeVisible();
     });
   });
 });
