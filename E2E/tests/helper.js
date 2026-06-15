@@ -11,4 +11,5 @@ const createBlog = async (page, content) => {
   await page.locator("#url").fill(content.url);
   await page.getByRole("button", { name: "Create" }).click();
 };
+
 module.exports = { loginWith, createBlog };

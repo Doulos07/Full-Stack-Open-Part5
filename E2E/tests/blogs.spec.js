@@ -51,6 +51,9 @@ describe("Blog app", () => {
       };
 
       await Helper.createBlog(page, content);
+      await expect(
+        page.getByText(`${content.title} ${content.author}`),
+      ).toBeVisible();
     });
   });
 });

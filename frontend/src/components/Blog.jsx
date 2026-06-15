@@ -6,7 +6,7 @@ const Blog = ({ blog, username, handleLike, handleDelete }) => {
 
   const visibileDetail = { display: visibile ? "" : "none" };
   return (
-    <div style={visibileDetail} className="blogDetail">
+    <div className="blogDetail">
       {blog.title} {blog.author}
       <button onClick={() => setVisibile(!visibile)}>
         {visibile ? "hide" : "view"}
