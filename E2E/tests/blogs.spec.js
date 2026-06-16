@@ -57,15 +57,24 @@ describe("Blog app", () => {
     });
 
     test("a blog can be liked", async ({ page }) => {
-      // Abrir el detalle del blog
       await page.getByRole("button", { name: "view" }).click();
 
-      // Verificar que arranca en 0 y dar like
       await expect(page.getByText("likes: 0")).toBeVisible();
       await page.getByRole("button", { name: "like" }).click();
 
-      // Verificar que aumentó a 1
       await expect(page.getByText("likes: 1")).toBeVisible();
+    });
+
+    test("a blog can be deleted", async ({ page }) => {
+      await page.getByRole("button", { name: "view" }).click();
+
+      page.on("dialog", (dialog) => dialog.accept());
+
+      await page.getByRole("button", { name: "remove" }).click();
+
+      await expect(
+        page.getByText(`${content.title} ${content.author}`),
+      ).not.toBeVisible();
     });
   });
 });
