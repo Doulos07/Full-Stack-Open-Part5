@@ -5,13 +5,15 @@ const Blogs = ({ blogs, username, handleLike, handleDelete }) => {
     <div>
       {blogs.map((blog) => {
         return (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            username={username}
-            handleLike={handleLike}
-            handleDelete={handleDelete}
-          />
+          <div key={blog.id} className="blog">
+            <Blog
+              key={blog.id}
+              blog={blog}
+              username={username}
+              handleLike={handleLike}
+              handleDelete={handleDelete}
+            />
+          </div>
         );
       })}
     </div>

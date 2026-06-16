@@ -98,5 +98,35 @@ describe("Blog app", () => {
         page.getByText(`${content.title} ${content.author}`),
       ).not.toBeVisible();
     });
+
+    test("blogs sorted by likes", async ({ page }) => {
+      const newBlog = {
+        title: "Jijiji",
+        author: "Patricio Rey y sus Redonditos de Ricota",
+        url: "https://open.spotify.com/track/1tW6LiJGXGlReuNP38wrKb?si=6f9bbcd2ca4c439a",
+      };
+      await Helper.createBlog(page, newBlog);
+
+      const blogNew = await page.locator(".blog", {
+        hasText: `${newBlog.title} ${newBlog.author}`,
+      });
+      const blogOld = await page.locator(".blog", {
+        hasText: `${content.title} ${content.author}`,
+      });
+
+      await blogNew.getByRole("button", { name: "view" }).click();
+      await blogOld.getByRole("button", { name: "view" }).click();
+
+      // Blog 2 -> 2 likes (waiting for confirmation of each like)
+      // We have to wait for the DOM to update between each like => Otherwise, it throws an error.
+      await blogNew.getByRole("button", { name: "like" }).click();
+      await expect(blogNew).toContainText("likes: 1");
+      await blogNew.getByRole("button", { name: "like" }).click();
+      await expect(blogNew).toContainText("likes: 2");
+
+      // Blog 1 -> 1 like
+      await blogOld.getByRole("button", { name: "like" }).click();
+      await expect(blogOld).toContainText("likes: 1");
+    });
   });
 });

@@ -96,7 +96,8 @@ const App = () => {
     blogService
       .create(blogData)
       .then((newBlog) => {
-        setBlogs(blogs.concat(newBlog));
+        setBlogs((prevBlogs) => prevBlogs.concat(newBlog).sort(sortLikes));
+        //setBlogs(blogs.concat(newBlog));
         setNotification({
           message: `a new blog ${newBlog.title} by ${newBlog.author}`,
           type: "success",
