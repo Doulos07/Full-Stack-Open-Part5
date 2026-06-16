@@ -115,7 +115,10 @@ describe("Blog app", () => {
       });
 
       await blogNew.getByRole("button", { name: "view" }).click();
+      await expect(blogNew.getByRole("button", { name: "like" })).toBeVisible();
+
       await blogOld.getByRole("button", { name: "view" }).click();
+      await expect(blogOld.getByRole("button", { name: "like" })).toBeVisible();
 
       // Blog 2 -> 2 likes (waiting for confirmation of each like)
       // We have to wait for the DOM to update between each like => Otherwise, it throws an error.

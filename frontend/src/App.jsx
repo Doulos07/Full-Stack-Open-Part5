@@ -92,12 +92,11 @@ const App = () => {
   };
 
   const newBlog = (blogData) => {
-    refBlogForm.current.toggleVisibile();
     blogService
       .create(blogData)
       .then((newBlog) => {
-        setBlogs((prevBlogs) => prevBlogs.concat(newBlog).sort(sortLikes));
-        //setBlogs(blogs.concat(newBlog));
+        setBlogs(blogs.concat(newBlog));
+        refBlogForm.current.toggleVisibile();
         setNotification({
           message: `a new blog ${newBlog.title} by ${newBlog.author}`,
           type: "success",
